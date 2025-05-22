@@ -12,9 +12,11 @@ interface AdminData {
 const adminExists = async (email: string) => {
   try {
     const admin = await Admin.findOne({ email });
+
     if (!admin) {
       return { success: false, message: "Admin not found" };
     }
+
     return { success: true, message: "Admin found", data: admin };
   } catch (error) {
     console.error("Error checking admin:", error);
@@ -25,7 +27,9 @@ const adminExists = async (email: string) => {
 const addAdmin = async (adminData: AdminData) => {
   try {
     const newAdmin = new Admin(adminData);
+
     const savedAdmin = await newAdmin.save();
+
     return {
       success: true,
       message: "Admin created successfully",
@@ -42,9 +46,11 @@ const updateAdmin = async (adminId: string, updateData: Partial<AdminData>) => {
     const updated = await Admin.findByIdAndUpdate(adminId, updateData, {
       new: true,
     });
+
     if (!updated) {
       return { success: false, message: "Admin not found" };
     }
+
     return {
       success: true,
       message: "Admin updated successfully",
@@ -59,9 +65,11 @@ const updateAdmin = async (adminId: string, updateData: Partial<AdminData>) => {
 const deleteAdmin = async (adminId: string) => {
   try {
     const deleted = await Admin.findByIdAndDelete(adminId);
+
     if (!deleted) {
       return { success: false, message: "Admin not found" };
     }
+
     return {
       success: true,
       message: "Admin deleted successfully",
@@ -76,6 +84,7 @@ const deleteAdmin = async (adminId: string) => {
 const getAllAdmins = async () => {
   try {
     const admins = await Admin.find();
+
     return {
       success: true,
       message: "Admins fetched successfully",
@@ -90,9 +99,11 @@ const getAllAdmins = async () => {
 const getAdminById = async (adminId: string) => {
   try {
     const admin = await Admin.findById(adminId);
+
     if (!admin) {
       return { success: false, message: "Admin not found" };
     }
+
     return {
       success: true,
       message: "Admin fetched successfully",
@@ -111,9 +122,11 @@ const suspendAdmin = async (adminId: string) => {
       { suspended: true },
       { new: true }
     );
+
     if (!updated) {
       return { success: false, message: "Admin not found" };
     }
+
     return {
       success: true,
       message: "Admin suspended successfully",
@@ -132,9 +145,11 @@ const reinstateAdmin = async (adminId: string) => {
       { suspended: false },
       { new: true }
     );
+
     if (!updated) {
       return { success: false, message: "Admin not found" };
     }
+
     return {
       success: true,
       message: "Admin reinstated successfully",
@@ -143,6 +158,29 @@ const reinstateAdmin = async (adminId: string) => {
   } catch (error) {
     console.error("Error reinstating admin:", error);
     return { success: false, message: "Failed to reinstate admin" };
+  }
+};
+
+const changePassword = async (adminId: string, newPassword: string) => {
+  try {
+    const updated = await Admin.findByIdAndUpdate(
+      adminId,
+      { password: newPassword },
+      { new: true }
+    );
+
+    if (!updated) {
+      return { success: false, message: "Admin not found" };
+    }
+
+    return {
+      success: true,
+      message: "Admin password changed successfully",
+      data: updated,
+    };
+  } catch (error) {
+    console.error("Error changing admin password:", error);
+    return { success: false, message: "Failed to change admin password" };
   }
 };
 
@@ -155,4 +193,5 @@ export const adminServices = {
   getAdminById,
   suspendAdmin,
   reinstateAdmin,
+  changePassword,
 };
