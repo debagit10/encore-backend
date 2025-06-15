@@ -92,7 +92,7 @@ const getToolById = async (toolId: string) => {
 
     return {
       success: true,
-      message: "Admin fetched successfully",
+      message: "Tool fetched successfully",
       data: tool,
     };
   } catch (error) {

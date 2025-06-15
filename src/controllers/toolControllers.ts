@@ -61,14 +61,6 @@ export const editTool = async (req: Request, res: Response) => {
 
   try {
     const result = await toolServices.editTool(toolId, toolData);
-
-    if (!result.success) {
-      res.status(400).json(result);
-      return;
-    }
-
-    res.status(200).json(result);
-    return;
   } catch (error) {
     console.error("Error editting tool:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
