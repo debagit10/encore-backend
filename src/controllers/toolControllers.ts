@@ -6,11 +6,10 @@ import { toolServices } from "../services/aiToolServices";
 
 interface ToolData {
   name: string;
-  short_desc: string;
-  long_desc: string;
+  description: string;
   category: string;
   deleted: boolean;
-  demoLink: string;
+  demo_url: string;
   image: string;
 }
 

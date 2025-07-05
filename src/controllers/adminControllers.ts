@@ -2,9 +2,11 @@ import { Request, Response } from "express";
 import { adminServices } from "../services/adminServices";
 import { otpServices } from "../utils/otp";
 import { passwordServices } from "../utils/password";
+import { sendAdminInviteEmail } from "../utils/mail/senders";
 
 interface AdminData {
-  name: string;
+  first_name: string;
+  last_name: string;
   email: string;
   password: string;
   role: string;
@@ -25,16 +27,24 @@ export const createAdmin = async (req: Request, res: Response) => {
       return;
     }
 
+    const password = await passwordServices.hashPassword(adminData.password);
+
     // Create the new admin
     const result = await adminServices.addAdmin({
       ...adminData,
-      password: await passwordServices.hashPassword(adminData.password),
+      password,
       suspended: false,
       deleted: false,
     });
 
     if (result.success) {
-      res.status(201).json({ ...result, otp: otpServices.generateOtp() });
+      await sendAdminInviteEmail({
+        ...adminData,
+        password: adminData.password,
+        to: adminData.email,
+      });
+
+      res.status(201).json({ result });
       return;
     }
 

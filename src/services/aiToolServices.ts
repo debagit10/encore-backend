@@ -2,11 +2,10 @@ import AI_Tool from "../models/aiToolModel";
 
 interface ToolData {
   name: string;
-  short_desc: string;
-  long_desc: string;
+  description: string;
   category: string;
   deleted: boolean;
-  demoLink: string;
+  demo_url: string;
   image: string;
 }
 
