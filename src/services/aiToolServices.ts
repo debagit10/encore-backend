@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import AI_Tool from "../models/aiToolModel";
 
 interface ToolData {
@@ -11,7 +12,10 @@ interface ToolData {
 
 const addTool = async (toolData: ToolData) => {
   try {
-    const newTool = new AI_Tool(toolData);
+    const newTool = new AI_Tool({
+      ...toolData,
+      category_id: new mongoose.Types.ObjectId(toolData.category),
+    });
 
     const savedTool = await newTool.save();
 
@@ -68,8 +72,10 @@ const deleteTool = async (toolId: string) => {
 
 const getAllTools = async () => {
   try {
-    const tools = await AI_Tool.find();
-
+    const tools = await AI_Tool.find({ deleted: false }).populate(
+      "category_id",
+      "name"
+    );
     return {
       success: true,
       message: "Tools fetched successfully",
@@ -83,7 +89,10 @@ const getAllTools = async () => {
 
 const getToolById = async (toolId: string) => {
   try {
-    const tool = await AI_Tool.findById(toolId);
+    const tool = await AI_Tool.find({ deleted: false }).populate(
+      "category_id",
+      "name"
+    );
 
     if (!tool) {
       return { success: false, message: "Tool not found" };

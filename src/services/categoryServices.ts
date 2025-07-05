@@ -1,3 +1,4 @@
+import AI_Tool from "../models/aiToolModel";
 import Category from "../models/categoryModels";
 
 interface CategoryData {
@@ -68,7 +69,27 @@ const deleteCategory = async (categoryId: string) => {
 
 const getAllCategories = async () => {
   try {
-    const categories = await Category.find();
+    const categories = await Category.aggregate([
+      {
+        $lookup: {
+          from: "ai_tools",
+          localField: "_id",
+          foreignField: "category_id",
+          as: "tools",
+        },
+      },
+      {
+        $addFields: {
+          toolCount: { $size: "$tools" },
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          toolCount: 1,
+        },
+      },
+    ]);
 
     return {
       success: true,
@@ -83,16 +104,23 @@ const getAllCategories = async () => {
 
 const getCategoryById = async (categoryId: string) => {
   try {
-    const tool = await Category.findById(categoryId);
+    const category = await Category.findById(categoryId);
 
-    if (!tool) {
+    if (!category) {
       return { success: false, message: "Category not found" };
     }
+
+    const tools = await AI_Tool.find({ category_id: categoryId }).select(
+      "name demo_url image"
+    );
 
     return {
       success: true,
       message: "Category fetched successfully",
-      data: tool,
+      data: {
+        category,
+        tools,
+      },
     };
   } catch (error) {
     console.error("Error fetching category:", error);
