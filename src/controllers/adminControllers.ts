@@ -12,6 +12,11 @@ interface AdminData {
   role: string;
 }
 
+interface PasswordData {
+  curPassword: string;
+  newPassword: string;
+}
+
 export const createAdmin = async (req: Request, res: Response) => {
   const adminData: AdminData = req.body;
 
@@ -210,12 +215,24 @@ export const reinstateAdmin = async (req: Request, res: Response) => {
 
 export const changePassword = async (req: Request, res: Response) => {
   const { adminId } = req.params;
-  const { newPassword } = req.body;
+  const passwordData: PasswordData = req.body;
 
   try {
+    const { data } = await adminServices.getAdminById(adminId);
+
+    const verify = await passwordServices.verifyPassword(
+      passwordData.curPassword,
+      String(data?.password)
+    );
+
+    if (!verify) {
+      res.status(500).json({ error: "Current password incorrect" });
+      return;
+    }
+
     const result = await adminServices.changePassword(
       adminId,
-      await passwordServices.hashPassword(newPassword)
+      await passwordServices.hashPassword(passwordData.newPassword)
     );
 
     if (!result.success) {

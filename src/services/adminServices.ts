@@ -176,7 +176,7 @@ const changePassword = async (adminId: string, newPassword: string) => {
 
     return {
       success: true,
-      message: "Admin password changed successfully",
+      message: "Password changed successfully",
       data: updated,
     };
   } catch (error) {

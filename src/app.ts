@@ -7,6 +7,7 @@ import { toolRoutes } from "./routes/toolRoutes";
 import { categoryRoutes } from "./routes/categoryRoutes";
 import { reviewRoutes } from "./routes/reviewRoutes";
 import { uploadImage, uploadMiddleware } from "./utils/uploadImage";
+import { updateProfile } from "./utils/editProfile";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use("/api/category", categoryRoutes);
 app.use("/api/review", reviewRoutes);
 
 app.post("/api/upload-image", uploadMiddleware, uploadImage);
+app.put("/api/edit-profile/:userId", updateProfile);
 
 app.get("/", (_req: Request, res: Response) => {
   res.status(200).json({ message: "Encore AI backend server live" });
