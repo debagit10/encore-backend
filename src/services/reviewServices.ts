@@ -35,30 +35,6 @@ const createReview = async (reviewData: ReviewData) => {
   }
 };
 
-const editReview = async (
-  reviewId: string,
-  updateData: Partial<ReviewData>
-) => {
-  try {
-    const updated = await Review.findByIdAndUpdate(reviewId, updateData, {
-      new: true,
-    });
-
-    if (!updated) {
-      return { success: false, message: "Review not found" };
-    }
-
-    return {
-      success: true,
-      message: "Review updated successfully",
-      data: updated,
-    };
-  } catch (error) {
-    console.error("Error editing review:", error);
-    return { success: false, message: "Failed to edit review" };
-  }
-};
-
 const deleteReview = async (reviewId: string) => {
   try {
     const deleted = await Review.findByIdAndDelete(reviewId);
@@ -79,7 +55,13 @@ const deleteReview = async (reviewId: string) => {
 
 const getAllReviews = async () => {
   try {
-    const reviews = await Review.find({ deleted: false }).populate("toolId");
+    const reviews = await Review.find({ deleted: false }).populate({
+      path: "toolId",
+      populate: {
+        path: "category_id",
+        select: "name",
+      },
+    });
 
     return {
       success: true,
@@ -93,7 +75,13 @@ const getAllReviews = async () => {
 
 const getReviewById = async (reviewId: string) => {
   try {
-    const review = await Review.findById(reviewId).populate("toolId");
+    const review = await Review.findById(reviewId).populate({
+      path: "toolId",
+      populate: {
+        path: "category_id",
+        select: "name",
+      },
+    });
 
     if (!review) {
       return { success: false, message: "Review not found" };
@@ -111,7 +99,7 @@ const getReviewById = async (reviewId: string) => {
 
 export default {
   createReview,
-  editReview,
+
   deleteReview,
   getAllReviews,
   getReviewById,

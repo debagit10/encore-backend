@@ -9,6 +9,10 @@ interface IReview {
     type: mongoose.Schema.Types.ObjectId;
     ref: "AI_Tool";
   };
+  categoryId: {
+    type: mongoose.Schema.Types.ObjectId;
+    ref: "Category";
+  };
 }
 
 const reviewSchema = new mongoose.Schema<IReview>(
@@ -20,6 +24,11 @@ const reviewSchema = new mongoose.Schema<IReview>(
     toolId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "AI_Tool",
+      required: true,
+    },
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
       required: true,
     },
   },
