@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { adminServices } from "../services/adminServices";
 import { otpServices } from "../utils/otp";
 import { passwordServices } from "../utils/password";
-import { sendAdminInviteEmail } from "../utils/mail/senders";
+import { sendAdminInviteEmail, sendOtpMail } from "../utils/mail/senders";
 
 interface AdminData {
   first_name: string;
@@ -241,6 +241,55 @@ export const changePassword = async (req: Request, res: Response) => {
     }
 
     res.status(200).json(result);
+    return;
+  } catch (error) {
+    console.error("Error changing password:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+    return;
+  }
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  try {
+    const { data } = await adminServices.adminExists(email);
+
+    if (!data) {
+      res.status(404).json({ error: "Email not an admin" });
+      return;
+    }
+
+    const otp = otpServices.generateOtp();
+
+    await otpServices.storeOtp(String(data?._id), otp);
+
+    await sendOtpMail(data.email, otp, data.first_name);
+
+    res
+      .status(200)
+      .json({ success: true, message: "OTP sent. Check mail", data });
+    return;
+  } catch (error) {
+    console.error("Error in forgot password:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+    return;
+  }
+};
+
+export const verifyForgotPassword = async (req: Request, res: Response) => {
+  const { adminId } = req.params;
+  const { otp } = req.body;
+
+  try {
+    const verify = await otpServices.verifyOtp(adminId, otp);
+
+    if (verify.success === false) {
+      res.status(500).json(verify);
+      return;
+    }
+
+    res.status(200).json(verify);
     return;
   } catch (error) {
     console.error("Error changing password:", error);

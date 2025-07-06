@@ -8,12 +8,16 @@ import {
   reinstateAdmin,
   deleteAdmin,
   changePassword,
+  forgotPassword,
+  verifyForgotPassword,
 } from "../controllers/adminControllers";
 
 export const adminRoutes = Router();
 
 adminRoutes.post("/create", createAdmin);
 adminRoutes.post("/login", loginAdmin);
+adminRoutes.post("/forgot-password", forgotPassword);
+adminRoutes.post("/verify-forgotPassword/:adminId", verifyForgotPassword);
 
 adminRoutes.get("/all", getAllAdmins);
 

@@ -38,7 +38,7 @@ export const sendAdminInviteEmail = async ({
   });
 };
 
-export const getOtpHtmlTemplate = async (
+export const sendOtpMail = async (
   to: string,
   otp: string,
   first_name: string

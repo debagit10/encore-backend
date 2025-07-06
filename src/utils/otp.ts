@@ -10,13 +10,13 @@ const generateOtp = () => {
   });
 };
 
-const storeOtp = async (user_id: string, otp_code: string) => {
+const storeOtp = async (user_id: string, otp: string) => {
   const expiresIn = 5 * 60 * 1000; // 5 minutes
   const expiresAt = new Date(Date.now() + expiresIn);
 
   await OTP.create({
     user_id,
-    otp_code,
+    otp,
     expiresAt,
     used: false,
   });
@@ -27,10 +27,11 @@ const storeOtp = async (user_id: string, otp_code: string) => {
   };
 };
 
-const verifyOtp = async (user_id: string, otp_code: string) => {
+const verifyOtp = async (user_id: string, otp: string) => {
   try {
     const otpEntry = await OTP.findOne({
-      where: { user_id, otp_code },
+      user_id,
+      otp,
     });
 
     if (!otpEntry) {
