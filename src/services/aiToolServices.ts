@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import AI_Tool from "../models/aiToolModel";
+import Review from "../models/reviewModel";
 
 interface ToolData {
   name: string;
@@ -76,10 +77,30 @@ const getAllTools = async () => {
       "category_id",
       "name"
     );
+
+    const toolsWithRatings = await Promise.all(
+      tools.map(async (tool) => {
+        const reviews = await Review.find({ toolId: tool._id });
+
+        const averageRating =
+          reviews.length > 0
+            ? Math.round(
+                reviews.reduce((sum, review) => sum + review.rating, 0) /
+                  reviews.length
+              )
+            : 0;
+
+        return {
+          ...tool.toObject(),
+          averageRating,
+        };
+      })
+    );
+
     return {
       success: true,
       message: "Tools fetched successfully",
-      data: tools,
+      data: toolsWithRatings,
     };
   } catch (error) {
     console.error("Error fetching tools:", error);
@@ -89,19 +110,32 @@ const getAllTools = async () => {
 
 const getToolById = async (toolId: string) => {
   try {
-    const tool = await AI_Tool.find({ deleted: false }).populate(
-      "category_id",
-      "name"
-    );
+    const tool = await AI_Tool.findOne({
+      _id: toolId,
+      deleted: false,
+    }).populate("category_id", "name");
 
     if (!tool) {
       return { success: false, message: "Tool not found" };
     }
 
+    const reviews = await Review.find({ toolId });
+
+    const averageRating =
+      reviews.length > 0
+        ? Math.round(
+            reviews.reduce((sum, review) => sum + review.rating, 0) /
+              reviews.length
+          )
+        : 0;
+
     return {
       success: true,
       message: "Tool fetched successfully",
-      data: tool,
+      data: {
+        ...tool.toObject(),
+        averageRating,
+      },
     };
   } catch (error) {
     console.error("Error fetching tool:", error);
