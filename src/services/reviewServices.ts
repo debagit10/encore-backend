@@ -1,4 +1,5 @@
 import Review from "../models/reviewModel";
+import { reviewCheck } from "../utils/reviewCheck";
 
 interface ReviewData {
   message: string;
@@ -10,6 +11,12 @@ interface ReviewData {
 
 const createReview = async (reviewData: ReviewData) => {
   try {
+    const check = reviewCheck(reviewData.message);
+
+    if (check === true) {
+      return { success: false, message: "Comment not posted" };
+    }
+
     const newReview = new Review({
       ...reviewData,
       deleted: false,
