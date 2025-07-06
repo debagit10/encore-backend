@@ -86,3 +86,23 @@ export const getReviewById = async (req: Request, res: Response) => {
     return;
   }
 };
+
+export const getToolReview = async (req: Request, res: Response) => {
+  const { toolId } = req.params;
+
+  try {
+    const review = await reviewServices.getToolReview(toolId);
+
+    if (!review.success) {
+      res.status(404).json({ error: "Review not found" });
+      return;
+    }
+
+    res.status(200).json(review);
+    return;
+  } catch (error) {
+    console.error("Error fetching review:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+    return;
+  }
+};

@@ -97,9 +97,27 @@ const getReviewById = async (reviewId: string) => {
   }
 };
 
+const getToolReview = async (toolId: string) => {
+  try {
+    const review = await Review.find({ toolId }).sort({ createdAt: -1 });
+
+    if (!review) {
+      return { success: false, message: "Review not found" };
+    }
+
+    return {
+      success: true,
+      data: review,
+    };
+  } catch (error) {
+    console.error("Error fetching tool review:", error);
+    return { success: false, message: "Failed to fetch tool review" };
+  }
+};
+
 export default {
   createReview,
-
+  getToolReview,
   deleteReview,
   getAllReviews,
   getReviewById,
