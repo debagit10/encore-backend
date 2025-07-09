@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.toolRoutes = void 0;
+const express_1 = require("express");
+const toolControllers_1 = require("../controllers/toolControllers");
+exports.toolRoutes = (0, express_1.Router)();
+exports.toolRoutes.post("/add", toolControllers_1.addTool);
+exports.toolRoutes.get("/all", toolControllers_1.getAllTools);
+exports.toolRoutes.get("/:toolId", toolControllers_1.getTool);
+exports.toolRoutes.put("/edit/:toolId", toolControllers_1.editTool);
+exports.toolRoutes.delete("/delete/:toolId", toolControllers_1.deleteTool);

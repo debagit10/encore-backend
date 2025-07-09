@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Backend repository for Techistry Intergrated - AI website directory",
   "scripts": {
-    "build": "tsc --project tsconfig.prod.json",
+    "build": "tsc --project tsconfig.prod.json && cpx \"src/utils/mail/**/*.html\" dist/utils/mail",
     "start:dev": "nodemon --project tsconfig.dev.json",
     "start:prod": "ts-node dist/index.js",
     "test": "jest",
