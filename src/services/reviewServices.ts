@@ -16,7 +16,7 @@ const createReview = async (reviewData: ReviewData) => {
     if (check === true) {
       return {
         success: false,
-        message: "Comment not posted - Contains profane word.",
+        message: "Comment not posted - Contains profane word(s).",
       };
     }
 
