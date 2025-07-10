@@ -14,7 +14,10 @@ const createReview = async (reviewData: ReviewData) => {
     const check = reviewCheck(reviewData.message);
 
     if (check === true) {
-      return { success: false, message: "Comment not posted" };
+      return {
+        success: false,
+        message: "Comment not posted - Contains profane word.",
+      };
     }
 
     const newReview = new Review({
@@ -22,6 +25,7 @@ const createReview = async (reviewData: ReviewData) => {
       deleted: false,
       approved: false,
     });
+
     const savedReview = await newReview.save();
 
     return {

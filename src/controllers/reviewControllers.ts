@@ -16,7 +16,7 @@ export const addReview = async (req: Request, res: Response) => {
     const result = await reviewServices.createReview(reviewData);
 
     if (!result.success) {
-      res.status(400).json({ error: "Failed to add review" });
+      res.status(400).json({ error: result.message });
       return;
     }
 
