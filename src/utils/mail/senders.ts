@@ -28,6 +28,7 @@ export const sendAdminInviteEmail = async ({
     password,
     role,
     loginUrl,
+    year: new Date().getFullYear(),
   });
 
   await sendEmail({
