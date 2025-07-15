@@ -23,6 +23,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
+  "https://encore-admin-dashboard.vercel.app",
   "https://encore-website.vercel.app",
 ];
 
