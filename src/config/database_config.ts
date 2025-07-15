@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const uri = String(process.env.MONGODB_URI_PROD);
+const uri = String(process.env.MONGODB_URI);
 
 export const connectDB = async (): Promise<void> => {
   try {
