@@ -25,7 +25,8 @@ const allowedOrigins = [
   "http://localhost:5174",
   "https://encore-admin-dashboard.vercel.app",
   "https://encore-website.vercel.app",
-  "https://encoreaitools.com"
+  "https://encoreaitools.com",
+  "https://admin.encoreaitools.com"
 ];
 
 app.use(
